@@ -438,7 +438,8 @@ else:
 @st.cache_resource
 def load_model():
     tokenizer = BertTokenizerFast.from_pretrained(MODEL_DIR)
-    model = BertForSequenceClassification.from_pretrained(MODEL_DIR)
+    # Use num_labels=2 for binary classification (match/no-match)
+    model = BertForSequenceClassification.from_pretrained(MODEL_DIR, num_labels=2, ignore_mismatched_sizes=True)
     model.to(device)
     model.eval()
     return tokenizer, model
@@ -588,7 +589,8 @@ def hybrid_predict(sentence, target_word):
             enc = tokenizer(sentence, gloss, truncation=True, max_length=MAX_LEN, padding="max_length", return_tensors="pt")
             enc = {k: v.to(device) for k,v in enc.items()}
             out = model(**enc)
-            prob = torch.sigmoid(out.logits).item()
+            # Use softmax for 2-label output, take probability of positive class
+            prob = torch.softmax(out.logits, dim=1)[0, 1].item()
             bert_scores.append(prob)
 
     combined = []
