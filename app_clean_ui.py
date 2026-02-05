@@ -38,7 +38,7 @@ st.set_page_config(
 )
 
 # ---------------- CONFIG ----------------
-MODEL_DIR = "wsd_hybrid_wikipedia_v1"  # New Wikipedia-enhanced model
+MODEL_DIR = "bert-base-uncased"  # HuggingFace model for cloud deployment
 MAX_LEN = 128
 TOP_K = 6
 ALPHA = 0.6
